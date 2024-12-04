@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:IbragimovI_Глазки_save"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="AgentPage">
+      Title="AgentPage" FontFamily="Century Gothic">
 
     <Grid>
         <Button Content="Go" Click="Button_Click"></Button>
