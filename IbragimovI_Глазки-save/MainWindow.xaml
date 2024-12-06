@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IbragimovI_Глазки_save"
         mc:Ignorable="d"
-        Title="Ibragimov Ilshat" Height="450" Width="800" MinHeight="250" MinWidth="250" FontFamily="Century Gothic" Icon="image/Глазки-save.ico">
+        Title="Ibragimov Ilshat" Height="450" Width="800" MinHeight="250" MinWidth="250" FontFamily="Century Gothic" Icon="image/Глазки-save.ico" Background="#FFE9F9 ">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="75"/>
