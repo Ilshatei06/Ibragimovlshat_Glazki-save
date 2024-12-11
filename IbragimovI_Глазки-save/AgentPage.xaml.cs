@@ -39,10 +39,11 @@ namespace IbragimovI_Глазки_save
             ComboType.SelectedIndex = 0;
             ComboSort.SelectedIndex = 0;
 
-            UpdateServices();
+            UpdateAgents();
+
         }
 
-        private void UpdateServices()
+        public void UpdateAgents()
         {
             var currentAgents = ИбрагимовИ_ГлазкиSaveEntities.GetContext().Agent.ToList();
             
@@ -89,16 +90,16 @@ namespace IbragimovI_Глазки_save
 
         private void TBoxSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
-            UpdateServices();
+            UpdateAgents();
         }
         private void ComboType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            UpdateServices();
+            UpdateAgents();
         }
 
         private void ComboSort_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            UpdateServices();
+            UpdateAgents();
         }
 
 
@@ -183,5 +184,21 @@ namespace IbragimovI_Глазки_save
             ChangePage(2, null);
         }
 
+        private void EditBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Manager.MainFrame.Navigate(new AddEditPage((sender as Button).DataContext as Agent));
+        }
+
+        private void AddBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Manager.MainFrame.Navigate(new AddEditPage(null));
+        }
+
+        private void Page_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            ИбрагимовИ_ГлазкиSaveEntities.GetContext().ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
+            AgentListView.ItemsSource = ИбрагимовИ_ГлазкиSaveEntities.GetContext().Agent.ToList();
+            UpdateAgents();
+        }
     }
 }

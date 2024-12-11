@@ -24,6 +24,27 @@ namespace IbragimovI_Глазки_save
     
         public int ID { get; set; }
         public int AgentTypeID { get; set; }
+        public string AgentTypeText
+        {
+            get
+            {
+                return AgentType.Title;
+            }
+        }
+        //public int AgentTypeIdComboBox
+        //{
+        //    get
+        //    {
+
+        //        return AgentTypeID - 1;
+        //    }
+        //    set
+        //    {
+        //        this.AgentTypeID = AgentTypeIdComboBox + 1;
+              
+        //    }
+        //}
+
         public string Title { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
@@ -34,13 +55,7 @@ namespace IbragimovI_Глазки_save
         public string INN { get; set; }
         public string KPP { get; set; }
 
-        public string AgentTypeText
-        {
-            get
-            {
-                return AgentType.Title;
-            }
-        }
+       
         public virtual AgentType AgentType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AgentPriorityHistory> AgentPriorityHistory { get; set; }

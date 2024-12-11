@@ -192,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="image\picture.png" />
+    <Resource Include="agents\picture.png" />
     <Resource Include="agents\agent_1.png" />
     <Resource Include="agents\agent_10.png" />
     <Resource Include="agents\agent_100.png" />
