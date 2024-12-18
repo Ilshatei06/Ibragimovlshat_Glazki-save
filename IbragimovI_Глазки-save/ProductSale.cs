@@ -19,7 +19,29 @@ namespace IbragimovI_Глазки_save
         public int AgentID { get; set; }
         public System.DateTime SaleDate { get; set; }
         public int ProductCount { get; set; }
-    
+
+        
+        public decimal Stoimost
+        {
+            get
+            {
+                decimal p = 0;
+                
+                p = Product.MinCostForAgent * ProductCount;
+                
+                return p;
+            }
+        }
+
+        public string ProductIdText
+        {
+            get
+            {
+                return Product.Title;
+            }
+        }
+
+
         public virtual Agent Agent { get; set; }
         public virtual Product Product { get; set; }
     }

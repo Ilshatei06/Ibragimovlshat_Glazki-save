@@ -11,7 +11,8 @@ namespace IbragimovI_Глазки_save
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.Windows.Media;
+
     public partial class Agent
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -24,27 +25,6 @@ namespace IbragimovI_Глазки_save
     
         public int ID { get; set; }
         public int AgentTypeID { get; set; }
-        public string AgentTypeText
-        {
-            get
-            {
-                return AgentType.Title;
-            }
-        }
-        //public int AgentTypeIdComboBox
-        //{
-        //    get
-        //    {
-
-        //        return AgentTypeID - 1;
-        //    }
-        //    set
-        //    {
-        //        this.AgentTypeID = AgentTypeIdComboBox + 1;
-              
-        //    }
-        //}
-
         public string Title { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
@@ -55,7 +35,63 @@ namespace IbragimovI_Глазки_save
         public string INN { get; set; }
         public string KPP { get; set; }
 
-       
+
+        public string AgentTypeText
+        {
+            get
+            {
+                return AgentType.Title;
+            }
+        }
+
+        public decimal Prod
+        {
+            get
+            {
+                decimal p = 0;
+                foreach (ProductSale sales in ProductSale)
+                {
+                    p = p + sales.Stoimost;
+                }
+                return p;
+            }
+        }
+
+        public int Discount
+        {
+            get
+            {
+                int disc;
+                if (Prod >= 500000)
+                    disc = 25;
+                else if (Prod >= 150000)
+                    disc = 20;
+                else if (Prod >= 50000)
+                    disc = 10;
+                else if (Prod >= 10000)
+                    disc = 5;
+                else
+                    disc = 0;
+
+                return disc;
+            }
+        }
+
+        public SolidColorBrush FontStyle
+        {
+            get
+            {
+                if (Discount > 24)
+                {
+                    return (SolidColorBrush)new BrushConverter().ConvertFromString("LightGreen");
+                }
+                else
+                {
+                    return (SolidColorBrush)new BrushConverter().ConvertFromString("White");
+                }
+            }
+        }
+
         public virtual AgentType AgentType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AgentPriorityHistory> AgentPriorityHistory { get; set; }

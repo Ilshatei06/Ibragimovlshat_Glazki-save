@@ -21,6 +21,7 @@ namespace IbragimovI_Глазки_save
     /// </summary>
     public partial class AgentPage : Page
     {
+
         List<Agent> CurrentPageList = new List<Agent>();
         List<Agent> TableList;
 
@@ -46,9 +47,9 @@ namespace IbragimovI_Глазки_save
         public void UpdateAgents()
         {
             var currentAgents = ИбрагимовИ_ГлазкиSaveEntities.GetContext().Agent.ToList();
-            
-           
-           
+
+
+
             if (ComboType.SelectedIndex == 1)
                 currentAgents = currentAgents.Where(p => p.AgentTypeID == 1).ToList();
             if (ComboType.SelectedIndex == 2)
@@ -71,10 +72,10 @@ namespace IbragimovI_Глазки_save
                 currentAgents = currentAgents.OrderBy(p => p.Title).ToList();
             if (ComboSort.SelectedIndex == 2)
                 currentAgents = currentAgents.OrderByDescending(p => p.Title).ToList();
-            //if (ComboSort.SelectedIndex == 3)
-            //    currentAgents = currentAgents.OrderBy(p => p.Discount).ToList();
-            //if (ComboSort.SelectedIndex == 4)
-            //    currentAgents = currentAgents.OrderByDescending(p => p.Discount).ToList();
+            if (ComboSort.SelectedIndex == 3)
+                currentAgents = currentAgents.OrderByDescending(p => p.Discount).ToList();
+            if (ComboSort.SelectedIndex == 4)
+                currentAgents = currentAgents.OrderBy(p => p.Discount).ToList();
             if (ComboSort.SelectedIndex == 5)
                 currentAgents = currentAgents.OrderBy(p => p.Priority).ToList();
             if (ComboSort.SelectedIndex == 6)
@@ -118,7 +119,7 @@ namespace IbragimovI_Глазки_save
 
             if (selectedPage.HasValue)
             {
-                if(selectedPage >= 0 && selectedPage <= CountPage)
+                if (selectedPage >= 0 && selectedPage <= CountPage)
                 {
                     CurrentPage = (int)selectedPage;
                     min = CurrentPage * 10 + 10 < CountRecords ? CurrentPage * 10 + 10 : CountRecords;
@@ -154,7 +155,7 @@ namespace IbragimovI_Глазки_save
                 }
             }
 
-            if(Ifupdate)
+            if (Ifupdate)
             {
                 PageListBox.Items.Clear();
 
@@ -199,6 +200,49 @@ namespace IbragimovI_Глазки_save
             ИбрагимовИ_ГлазкиSaveEntities.GetContext().ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
             AgentListView.ItemsSource = ИбрагимовИ_ГлазкиSaveEntities.GetContext().Agent.ToList();
             UpdateAgents();
+        }
+
+        private void AgentList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (AgentListView.SelectedItems.Count > 1)
+                EdPriority.Visibility = Visibility.Visible;
+            else
+                EdPriority.Visibility = Visibility.Hidden;
+        }
+
+        private void EdPriority_Click(object sender, RoutedEventArgs e)
+        {
+            int maxPriority = 0;
+            foreach (Agent agent in AgentListView.SelectedItems)
+            {
+                if (agent.Priority > maxPriority)
+                    maxPriority = agent.Priority;
+            }
+            EditPriorityWindow editPriorityWindow = new EditPriorityWindow(maxPriority);
+            editPriorityWindow.ShowDialog();
+
+            if (string.IsNullOrWhiteSpace(editPriorityWindow.TBoxPriority.Text))
+                MessageBox.Show("Невозможно выполнить изменение приоритета, так как вы не указали новое значени!");
+            else
+            {
+                int NewPriority = Convert.ToInt32(editPriorityWindow.TBoxPriority.Text);
+                if (NewPriority <= 0)
+                    MessageBox.Show("Невозможно выполнить изменение приоритета, так как вы указали не верное значени!");
+                else 
+                {
+                    foreach (Agent agent in AgentListView.SelectedItems)
+                        agent.Priority = NewPriority;
+                    try
+                    {
+                        ИбрагимовИ_ГлазкиSaveEntities.GetContext().SaveChanges();
+                        UpdateAgents();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
+            }
         }
     }
 }

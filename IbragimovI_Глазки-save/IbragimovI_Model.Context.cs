@@ -13,17 +13,21 @@ namespace IbragimovI_Глазки_save
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
+
+
     public partial class ИбрагимовИ_ГлазкиSaveEntities : DbContext
     {
+
         private static ИбрагимовИ_ГлазкиSaveEntities _context;
 
         public static ИбрагимовИ_ГлазкиSaveEntities GetContext()
         {
-            if(_context == null)
+            if (_context == null)
                 _context = new ИбрагимовИ_ГлазкиSaveEntities();
 
             return _context;
         }
+
 
         public ИбрагимовИ_ГлазкиSaveEntities()
             : base("name=ИбрагимовИ_ГлазкиSaveEntities")

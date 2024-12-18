@@ -1,7 +1,9 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace IbragimovI_Глазки_save
 {
@@ -23,6 +26,7 @@ namespace IbragimovI_Глазки_save
     public partial class AddEditPage : Page
     {
         private Agent _currentAgent = new Agent();
+        private ProductSale currentProductSale = new ProductSale();
         public AddEditPage(Agent SelectedAgent)
         {
             InitializeComponent();
@@ -35,29 +39,116 @@ namespace IbragimovI_Глазки_save
             }
 
 
-           
-
-
-            //// Загружаем типы агентов напрямую в ComboBox
-            //ComboType.ItemsSource = ИбрагимовИ_ГлазкиSaveEntities.GetContext().AgentType.ToList();
-            //ComboType.DisplayMemberPath = "Title"; // Отображаемые названия
-            //ComboType.SelectedValuePath = "ID";   // Идентификатор для привязки
-            //ComboType.SelectedValue = _currentAgent.AgentTypeID; // Устанавливаем начальное значение
-
-
-
+            var currentProductSale = ИбрагимовИ_ГлазкиSaveEntities.GetContext().ProductSale.Where(p => p.AgentID == _currentAgent.ID).ToList();
+            ProductSaleListView.ItemsSource = currentProductSale;
+ 
             DataContext = _currentAgent;
+
+
+            ComboSerchAdd.ItemsSource = ИбрагимовИ_ГлазкиSaveEntities.GetContext().Product.ToList();
+            ComboSerchAdd.DisplayMemberPath = "Title";
+            ComboSerchAdd.SelectedValuePath = "ID";
+
         }
 
+        public void UpdateProductSale()
+        {
+            var currentProductSale = ИбрагимовИ_ГлазкиSaveEntities.GetContext().ProductSale.Where(p => p.AgentID == _currentAgent.ID).ToList();
+            //currentProductSale = currentProductSale.Where(p => p.ProductIdText.ToLower().Contains(TBoxSearch.Text.ToLower())).ToList(); //для поиска продажи
+
+            ProductSaleListView.ItemsSource = currentProductSale.ToList();
+
+        }
+
+        private void AddBtnPro_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedProductId = ComboSerchAdd.SelectedValue;
+            var selectedProductCount = string.IsNullOrWhiteSpace(ProdCount.Text) ? 0 : Convert.ToInt32(ProdCount.Text);
+            var selectedDate = Date.SelectedDate;
+
+            StringBuilder errors = new StringBuilder();
+            if (selectedProductId == null || string.IsNullOrWhiteSpace(selectedProductId.ToString()))
+                errors.AppendLine("Укажите название!");
+            if (selectedDate == null)
+                errors.AppendLine("Укажите дату!");
+            if (Convert.ToInt32(selectedProductCount) <= 0)
+                    errors.AppendLine("Укажите количсетво корректно!");
+            if (errors.Length > 0)
+            {
+                MessageBox.Show(errors.ToString());
+                return;
+            }
+
+            ProductSale newSale = new ProductSale
+            {
+                AgentID = _currentAgent.ID, 
+                ProductID = Convert.ToInt32(selectedProductId), 
+                ProductCount = selectedProductCount,
+                SaleDate = selectedDate.Value 
+            };
+
+  
+
+            if (currentProductSale.ID == 0)
+                ИбрагимовИ_ГлазкиSaveEntities.GetContext().ProductSale.Add(newSale);
+            try
+            {
+                ИбрагимовИ_ГлазкиSaveEntities.GetContext().SaveChanges();
+                UpdateProductSale();
+                ComboSerchAdd.SelectedIndex = -1; 
+                ProdCount.Clear(); 
+                Date.SelectedDate = null; 
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
+            }
+        }
+
+        private void DelBtnPro_Click(object sender, RoutedEventArgs e)
+        {
+            if (ProductSaleListView.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Выберите продукт для удаления!");
+                return;
+            }
+            else if (MessageBox.Show("Вы точно хотите выполнить удаление?", "Внимание!", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    foreach (ProductSale products in ProductSaleListView.SelectedItems)
+                    {
+                        ИбрагимовИ_ГлазкиSaveEntities.GetContext().ProductSale.Remove(products);
+                    }
+
+                    ИбрагимовИ_ГлазкиSaveEntities.GetContext().SaveChanges();
+                    UpdateProductSale();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message.ToString());
+                }
+            }
+        }
         private void ChangePictureBtn_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog myOpenFileDialog = new OpenFileDialog();
             if (myOpenFileDialog.ShowDialog() == true)
             {
-                _currentAgent.Logo = myOpenFileDialog.FileName;
+
+
+                string path = myOpenFileDialog.FileName;
+
+                // Находим индекс слова "agents"
+                int index = path.LastIndexOf("agents");
+
+                // Извлекаем подстроку, начиная от слова "agents"
+                path = "\\" + path.Substring(index);
+
+
+                _currentAgent.Logo = path;
                 LogoImage.Source = new BitmapImage(new Uri(myOpenFileDialog.FileName));
             }
-
         }
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
@@ -166,5 +257,10 @@ namespace IbragimovI_Глазки_save
                 }
             }
         }
+
+        //private void TBoxSearch_TextChanged(object sender, TextChangedEventArgs e) //поиск продажи
+        //{
+        //    UpdateProductSale(); 
+        //}
     }
 }

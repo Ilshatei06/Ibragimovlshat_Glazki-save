@@ -73,6 +73,9 @@
     <Compile Include="AgentType.cs">
       <DependentUpon>IbragimovI_Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="EditPriorityWindow.xaml.cs">
+      <DependentUpon>EditPriorityWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="IbragimovI_Model.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -113,6 +116,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AgentPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditPriorityWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -323,6 +330,8 @@
     <Resource Include="agents\agent_97.png" />
     <Resource Include="agents\agent_98.png" />
     <Resource Include="agents\agent_99.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="IbragimovI_Model.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>IbragimovI_Model.edmx</DependentUpon>
@@ -334,6 +343,5 @@
       <LastGenOutput>IbragimovI_Model.cs</LastGenOutput>
     </Content>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
